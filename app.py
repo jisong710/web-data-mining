@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request
-from module.database import Database
 
 app = Flask(__name__)
-db = Database()
 
 @app.route('/',methods = ['POST', 'GET'])
 def index():
