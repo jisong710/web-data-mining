@@ -6,78 +6,29 @@ db = Database()
 
 @app.route('/',methods = ['POST', 'GET'])
 def index():
-    style = "style.css"
-    if(request.method == 'POST'):
-        print(request.form)
-        datalogin = db.login(request.form);
-        if(datalogin != "kosong"):
-            return render_template('index.html',username = datalogin)
-        else:
-            message = "error saat login"
-            return render_template('login.html',style = style)
-    else:
-        datalogin = db.login(request.form);
-        return render_template('index.html',style = style, username = datalogin)
+    return render_template('halamanUtama.html')
 
 @app.route('/svr',methods = ['POST', 'GET'])
-def index():
-    style = "style.css"
+def svr():
     if(request.method == 'POST'):
-        print(request.form)
-        datalogin = db.login(request.form);
-        if(datalogin != "kosong"):
-            return render_template('index.html',username = datalogin)
-        else:
-            message = "error saat login"
-            return render_template('login.html',style = style)
+        return render_template('SVR.html')
     else:
-        datalogin = db.login(request.form);
-        return render_template('index.html',style = style, username = datalogin)
+        return render_template('SVR.html')
 
 @app.route('/ltsm',methods = ['POST', 'GET'])
-def index():
-    style = "style.css"
+def ltsm():
     if(request.method == 'POST'):
-        print(request.form)
-        datalogin = db.login(request.form);
-        if(datalogin != "kosong"):
-            return render_template('index.html',username = datalogin)
-        else:
-            message = "error saat login"
-            return render_template('login.html',style = style)
+        return render_template('LTSM.html')
     else:
-        datalogin = db.login(request.form);
-        return render_template('index.html',style = style, username = datalogin)
+        return render_template('LTSM.html')
 
 @app.route('/about',methods = ['POST', 'GET'])
-def index():
-    style = "style.css"
-    if(request.method == 'POST'):
-        print(request.form)
-        datalogin = db.login(request.form);
-        if(datalogin != "kosong"):
-            return render_template('index.html',username = datalogin)
-        else:
-            message = "error saat login"
-            return render_template('login.html',style = style)
-    else:
-        datalogin = db.login(request.form);
-        return render_template('index.html',style = style, username = datalogin)
+def about():
+    return render_template('tentangkami.html')
 
 @app.route('/information',methods = ['POST', 'GET'])
-def index():
-    style = "style.css"
-    if(request.method == 'POST'):
-        print(request.form)
-        datalogin = db.login(request.form);
-        if(datalogin != "kosong"):
-            return render_template('index.html',username = datalogin)
-        else:
-            message = "error saat login"
-            return render_template('login.html',style = style)
-    else:
-        datalogin = db.login(request.form);
-        return render_template('index.html',style = style, username = datalogin)
+def information():
+    return render_template('informasialgoritma.html')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,15 @@
+body, html {
+    height: 100%;
+    font-family: "Montserrat", sans-serif;
+  }
+  
+  .bgimg {
+    background-position: center;
+    background-size: cover;
+    background-color:maroon;
+    min-height: 75%;
+  }
+  
+  .menu {
+    display: none;
+  }
