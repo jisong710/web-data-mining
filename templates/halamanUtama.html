@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
 <title>W3.CSS Template</title>
 <meta charset="UTF-8">
@@ -32,7 +32,7 @@
 <div class="w3-main w3-padding-large" style="margin-left:40%">
 
   <!-- Menu icon to open sidebar -->
-  <span class="w3-button w3-top w3-white w3-xxlarge w3-text-grey w3-hover-text-black" style="width:auto;right:0;" onclick="openNav()"><img src="tbclogo.png" alt="" style="width: 50px;height: 50px;"></span>
+  <span class="w3-button w3-top w3-white w3-xxlarge w3-text-grey w3-hover-text-black" style="width:auto;right:0;" onclick="openNav()"><img src="{{ url_for('static', filename='img/tbclogo.png') }}" alt="" style="width: 50px;height: 50px;"></span>
 
   <!-- Header -->
   <header class="w3-container w3-center" style="padding:80px 40px 16px 16px" id="home">

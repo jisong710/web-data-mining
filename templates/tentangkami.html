@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,13 +16,13 @@
     <div class="w3-top">
       <div class="w3-row w3-padding w3-black">
         <div class="w3-col s4">
-          <a href="halamanUtama.html" class="w3-button w3-block w3-black">HOME</a>
+          <a href="/" class="w3-button w3-block w3-black">HOME</a>
         </div>
         <div class="w3-col s4">
-          <a href="#about" class="w3-button w3-block w3-black">Informasi Algoritma</a>
+          <a href="/information" class="w3-button w3-block w3-black">Informasi</a>
         </div>
         <div class="w3-col s4">
-          <a href="#menu" class="w3-button w3-block w3-black">Tentang Kami</a>
+          <a href="#" class="w3-button w3-block w3-black">Tentang Kami</a>
         </div>
       </div>
     </div>
@@ -34,8 +34,16 @@
     <!-- Menu Container -->
     
     <!-- Contact/Area Container -->
-    <div class="w3-container" id="where" style="padding-bottom:32px;">
-      <div class="w3-content" style="max-width:700px">
+    <div class="w3-container" id="where" style="padding-bottom:32px; padding-top:100px">
+      <div class="w3-row w3-auto">
+        <div class="w3-col w3-half w3-center w3-white" id="diah">
+          <img src="{{ url_for('static', filename='img/Diah.jpg') }}"  alt="" srcset="" style="height: 500px;">
+          <a href="#diah" class="w3-button w3-block w3-black">Diah</a>
+        </div>
+        <div class="w3-col w3-half w3-center w3-white" id="ridha">
+          <img src="{{ url_for('static', filename='img/Ridha.jpg') }}"  alt="" srcset="" style="height: 500px;">
+          <a href="#ridha" class="w3-button w3-block w3-black">Ridha</a>
+        </div>
       </div>
     </div>
     
