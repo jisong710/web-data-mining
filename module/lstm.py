@@ -225,8 +225,8 @@ class lstm:
         # Visualize the data
         plt.figure(figsize=(14,6))
         #plt.plot(train_30_Pm10['pm10'], label="Traning",c = "g")
-        plt.plot(int(valid_30_jumlahpenderita['jumlahpenderita']), label="validasi",c = "b")
+        plt.plot(valid_30_jumlahpenderita['jumlahpenderita'], label="validasi",c = "b")
         plt.plot(valid_30_jumlahpenderita['Predictions'], label="prediksi", c = "r")
         plt.legend()
         plt.savefig("static/img/ltsm.png", format='png')
-        return valid_30_jumlahpenderita['jumlahpenderita'],valid_30_jumlahpenderita['Predictions']
+        return valid_30_jumlahpenderita['Predictions'],valid_30_jumlahpenderita.index

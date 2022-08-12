@@ -37,15 +37,36 @@
 
 <!-- Add a background color and large text to the whole page -->
 <div class="w3-sand w3-grayscale w3-large">
-  {% if len(tabel) > 0 %}
-  <div class="w3-container" id="where" style="padding-bottom:32px;">
-    <div class="w3-content" style="max-width:700px">
-      <img src="{{ url_for('static', filename='img/ltsm.png') }}" alt="" srcset="">
+  {% if tabel.bool %}
+  <div class="w3-container" id="where" style="padding-bottom:32px; padding-top:100px">
+    <div class="w3-row w3-auto">
+      <div class="w3-col l8 w3-white" id="plot">
+        <img src="{{ url_for('static', filename='img/ltsm.png') }}"  class="w3-block" alt="" srcset="" style="height: 450px;">
+      </div>
+      <div class="w3-col l4 w3-white" id="tabel">
+        <table class="w3-table w3-block w3-striped w3-border">
+          <thead>
+            <th>
+              tanggal
+            </th>
+            <th>
+              prediksi
+            </th>
+          </thead>
+          {% for row in range(length) %}
+          <tr>
+            <td>{{predict[row]}}</td>
+            <td>{{tabel[row]}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
     </div>
   </div>
-{% endif %}
-<!-- End page content -->
-</div>
+  {% endif %}
+  
+  </div>
+  
 
 <!-- Footer -->
 

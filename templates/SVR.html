@@ -32,7 +32,6 @@
     <form action="/svr" method="post">
       <p><button class="w3-button w3-black" type="submit">start</button></p>
     </form>
-    <img src="data:image/jpg;base64,{{plot}}" alt="" srcset="">
   </div>
 </header>
 
@@ -41,11 +40,11 @@
 {% if tabel.bool %}
 <div class="w3-container" id="where" style="padding-bottom:32px; padding-top:100px">
   <div class="w3-row w3-auto">
-    <div class="w3-col l6 w3-center w3-white" id="plot">
-      <img src="{{ url_for('static', filename='img/svr.png') }}"  alt="" srcset="" style="height: 450px;">
+    <div class="w3-col l8 w3-center w3-white" id="plot">
+      <img src="{{ url_for('static', filename='img/svr.png') }}"  alt="" srcset="" style="height: 500px;">
     </div>
-    <div class="w3-col l6 w3-center w3-white" id="tabel">
-      <table class="w3-center w3-white">
+    <div class="w3-col l4 w3-center w3-white" id="tabel">
+      <table class="w3-table w3-block w3-striped w3-border">
         <thead>
           <th>
             tanggal

@@ -210,7 +210,7 @@ class svr:
     d = pd.concat([datatbc,df_predict])
     d
     svrjpg = io.BytesIO()
-    plt.figure()
+    plt.figure(figsize=(15,10))
     plt.plot(d.loc[d['label']=='prediksi', 'jumlahpenderita'], label= 'prediksi', color= 'red')
     plt.ylabel("jumlah penderita penyakit tbc")
     plt.xlabel("Year")
