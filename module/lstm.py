@@ -9,6 +9,7 @@ Original file is located at
 **IMPORT LIBRARY**
 """
 
+import io
 import pandas as pd
 import glob
 import numpy as np
@@ -224,7 +225,8 @@ class lstm:
         # Visualize the data
         plt.figure(figsize=(14,6))
         #plt.plot(train_30_Pm10['pm10'], label="Traning",c = "g")
-        plt.plot(valid_30_jumlahpenderita['jumlahpenderita'], label="validasi",c = "b")
+        plt.plot(int(valid_30_jumlahpenderita['jumlahpenderita']), label="validasi",c = "b")
         plt.plot(valid_30_jumlahpenderita['Predictions'], label="prediksi", c = "r")
         plt.legend()
-        return plt.show(),valid_30_jumlahpenderita
+        plt.savefig("static/img/ltsm.png", format='png')
+        return valid_30_jumlahpenderita['jumlahpenderita'],valid_30_jumlahpenderita['Predictions']

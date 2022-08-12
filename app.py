@@ -11,19 +11,21 @@ def index():
 
 @app.route('/svr',methods = ['POST', 'GET'])
 def svr():
+    tabel = []
+    prediksi = []
     if(request.method == 'POST'):
-        plot,tabel = algoritmasvr.svr()
-        return render_template('SVR.html')
-    else:
-        return render_template('SVR.html')
+        tabel,prediksi = algoritmasvr.svr()
+    length = len(tabel)
+    return render_template('SVR.html', tabel = tabel , length = length, predict = prediksi)
 
 @app.route('/ltsm',methods = ['POST', 'GET'])
 def ltsm():
+    tabel = []
+    prediksi = []
     if(request.method == 'POST'):
-        plot,tabel = algoritmalstm.lstm()
-        return render_template('LTSM.html')
-    else:
-        return render_template('LTSM.html')
+        tabel,prediksi = algoritmalstm.lstm()
+    length = len(tabel)
+    return render_template('LTSM.html', tabel = tabel , length = length, predict = prediksi)
 
 @app.route('/about',methods = ['POST', 'GET'])
 def about():

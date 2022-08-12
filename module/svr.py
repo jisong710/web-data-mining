@@ -8,6 +8,7 @@ Original file is located at
 """
 
 #Library
+import base64
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -29,6 +30,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 from sklearn.svm import SVR
 from datetime import datetime, timedelta
+import io
 
 class svr:
   def connect(self):
@@ -207,11 +209,12 @@ class svr:
     d = pd.concat(d)
     d = pd.concat([datatbc,df_predict])
     d
-
-    plt.figure(figsize=(15,10))
+    svrjpg = io.BytesIO()
+    plt.figure()
     plt.plot(d.loc[d['label']=='prediksi', 'jumlahpenderita'], label= 'prediksi', color= 'red')
     plt.ylabel("jumlah penderita penyakit tbc")
     plt.xlabel("Year")
     plt.legend()
     plt.title("Prediksi Penderita Penyakit Tuberkulosis Kab.Karawang")
-    return plt.show,d
+    plt.savefig("static/img/svr.png", format='png')
+    return df_predict['jumlahpenderita'],df_predict.index
