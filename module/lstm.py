@@ -216,7 +216,7 @@ class lstm:
         x_test_JP = []
         y_test_JP = []
         for i in range (30, 30 + 30 ):
-        x_test_JP.append(inputJP[i-30:i, 0])
+            x_test_JP.append(inputJP[i-30:i, 0])
         
         
         x_test_JP, y_test_JP = np.array(x_test_JP), np.array(y_test_JP)
@@ -267,6 +267,5 @@ class lstm:
         plt.legend()
         plt.title("Jumlah Penderita TBC")
         plt.show()
-        plt.legend()
         plt.savefig("static/img/ltsm.png", format='png')
-        return a['Predictions'],a.index
+        return plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'],a.index
