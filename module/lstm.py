@@ -266,6 +266,5 @@ class lstm:
         plt.xlabel("Date")
         plt.legend()
         plt.title("Jumlah Penderita TBC")
-        plt.show()
         plt.savefig("static/img/ltsm.png", format='png')
-        return plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'],a.index
+        return plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'],plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted'].index
