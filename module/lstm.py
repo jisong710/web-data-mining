@@ -45,17 +45,22 @@ class lstm:
         df = pd.read_csv('datasetTBC.csv', parse_dates=["date"])
         df
 
-        df['date']= pd.to_datetime(df['date'])
+        """# **PreProcessing**"""
+
+        df['date']=  pd.to_datetime(df['date'])
 
         df['date'] = df['date'].dt.strftime('%Y-%m-%d')
         df
 
         df.info()
 
-        """Mengubah data kosong menjadi nan """
+        """menbuang data nol"""
 
         df['date'].fillna(0,inplace = True)
         df = df.loc[df['jumlahpenderita']>0]
+        df
+
+        df = df.replace('---', np.nan)
         df
 
         df.isnull().sum()
@@ -63,170 +68,205 @@ class lstm:
         df.dropna(subset = ["date"], inplace=True)
         df
 
-        df['jumlahpenderita'].hist()
+        """# Mengubah data menjadi float"""
 
-        """Mengubah indeks menjadi float"""
-
-        df['jumlahpenderita']= df['jumlahpenderita'].astype(str).astype(float)
+        df['jumlahpenderita']=df['jumlahpenderita'].astype(str).astype(float)
         df
 
         plt.figure(figsize=(20, 8))
-        df['jumlahpenderita'].plot(title = 'Data Asli', color = 'r')
-        plt.tight_layout()
+        df['jumlahpenderita'].plot(title = 'Original Data', color = 'b')
         plt.show()
 
-        """Persebaran Indeks Data Berdasarkan Parameter"""
+        """Membuat Variabel Dataset """
 
-        plt.rcParams['figure.figsize']=(20,20)
-        df.hist()
+        Dataset = df.copy()
 
-        """Mengisi keseluruhan indeks kosong menggunakan teknik interpolasi linear"""
+        Dataset = Dataset.set_index('date')
+        Dataset .to_csv( "datasettbcclear.csv", encoding='utf-8-sig')
+        Dataset
 
-        df = df.interpolate(method='linear',axis=0)
-        df
+        """Parameter untuk proses training split"""
 
-        plt.figure(figsize=(20, 8))
-        df['jumlahpenderita'].plot(title = 'Data interpolasi', color = 'b')
-        plt.tight_layout()
-        plt.show()
+        DatasetJumlahpenderita = Dataset.copy()
 
-        df.to_csv( "datasettbcbersih.csv", encoding='utf-8-sig')
+        """Pembagian Train dan Test"""
 
-        """membuat variabel DropDatasetWithIndex agar mudah sort stasiun serta proses predict future
+        DataJP = DatasetJumlahpenderita
+        Dataset_Jumlahpenderita = DataJP.values
+        training_data_jumlahpenderita=int(np.ceil(len(Dataset_Jumlahpenderita)*.80))
+        training_data_jumlahpenderita
 
-        """
+        Dataset_Jumlahpenderita = Dataset_Jumlahpenderita.reshape(-1,1)
+        Dataset_Jumlahpenderita
 
-        DropDatasetWithIndex = df.copy()
-
-        DropDatasetWithIndex["date"] = pd.to_datetime(DropDatasetWithIndex["date"])
-        DropDatasetWithIndex
-
-        DropDatasetWithIndex = DropDatasetWithIndex.set_index('date')
-        DropDatasetWithIndex.to_csv( "datasettbcbersih.csv", encoding='utf-8-sig')
-
-        """Membagi data untuk proses training split"""
-
-        df_interpolate_lin_jumlahpenderita = DropDatasetWithIndex[['jumlahpenderita']]
-
-        """MODEL LSTM
-
-        Pembagian Train dan test
-        """
-
-        Datajumlahpenderita = df_interpolate_lin_jumlahpenderita
-        # Convert the dataframe to a numpy array
-        datasetjumlahpenderita = Datajumlahpenderita.values
-        # Get the number of rows to train the model on
-        training_data_len_jumlahpenderita = int(np.ceil( len(datasetjumlahpenderita) * .80))
-
-        training_data_len_jumlahpenderita
-
-        datasetjumlahpenderita = datasetjumlahpenderita.reshape(-1,1)
-        datasetjumlahpenderita
-
-        """Normalisasi dengan MinMaxScaler"""
+        """NORMALISI MINMAX SCALER"""
 
         scale = MinMaxScaler()
-        sca = scale.fit_transform(datasetjumlahpenderita)
+        sca = scale.fit_transform(Dataset_Jumlahpenderita)
         sca
 
-        """Ubah menjadi 3D Array"""
+        """Mengubah menjadi 3D array"""
 
-        # Buat kumpulan data pelatihan
-        # Buat kumpulan data pelatihan berskala
-        train_data_jumlahpenderita = sca[0:int(training_data_len_jumlahpenderita), :]
-        # Pisahkan data menjadi set data x_train dan y_train
+        #Membuat TRAINING DATA
+        train_data_JP = sca[0:int(training_data_jumlahpenderita), :]
+        #Bagi data x_train dan y_train
         x_train = []
         y_train = []
 
-        for i in range(30, len(train_data_jumlahpenderita)):
-            x_train.append(train_data_jumlahpenderita[i-30:i, 0])
-            y_train.append(train_data_jumlahpenderita[i, 0])
-            #if i<= 100:z
-                #print(x_train)
-                #print(y_train)
-                #print()
-                
-        # Ubah x_train dan y_train menjadi array numpy
-        x_train, y_train = np.array(x_train), np.array(y_train)
+        for i in range(30,len(train_data_JP)):
+            x_train.append(train_data_JP[i-30:i, 0])
+            y_train.append(train_data_JP[i, 0])
 
-        # Bentuk ulang datanya
-        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+        #Ubah x_train dan y_train ke Numppy Arrays
+        x_train,y_train = np.array(x_train), np.array(y_train)
 
-        """Proses Modelling"""
+        x_train = np.reshape(x_train, (x_train.shape[0],x_train.shape[1],1))
 
-        #masuk dalam skenario pengujian
+        """## MODELING"""
+
         model = Sequential()
-        model.add(LSTM(units = 128, return_sequences=False, input_shape= (x_train.shape[1], 1)))
+        #Add First Layer
+        model.add(LSTM(units = 64, return_sequences=False, input_shape= (x_train.shape[1], 1)))
+        model.add(Dropout(0.2))
         model.add(Dense(units = 1, activation="sigmoid"))
 
+
         # Compile the model
-        opt = tf.keras.optimizers.RMSprop(learning_rate=0.001)
+        opt = tf.keras.optimizers.Adam(learning_rate=0.001)
         model.compile(loss='mean_squared_error', optimizer=opt)
 
-        history = model.fit(x_train, y_train, batch_size=100, epochs = 100)
+        history = model.fit(x_train, y_train, batch_size=100, epochs = 300)
 
-        model.save('model_jumlahpenderita')
+        model.save('Model_JP.h5')
 
         plt.figure(figsize=(14,6))
-        plt.plot(history.history["loss"], label="loss")
+        plt.plot(history.history["loss"],label="loss")
         plt.xlabel("Epoch")
         plt.ylabel("Loss")
         plt.legend()
         plt.show()
 
-        """## membuat test data dan reshape data kembali"""
+        """Membuat TEST DATA(y_train x_test y_test"""
 
-        # Create the testing data set
-        test_data_30_jumlahpenderita = sca[training_data_len_jumlahpenderita - 30: , :]
-        # Create the data sets x_test and y_test
-        x_test_30_jumlahpenderita = []
-        y_test_30_jumlahpenderita = sca[training_data_len_jumlahpenderita:, :]
-        for i in range(30, len(test_data_30_jumlahpenderita)):
-            x_test_30_jumlahpenderita.append(test_data_30_jumlahpenderita[i-30:i, 0])
-            
-        # Convert the data to a numpy array
-        x_test_30_jumlahpenderita = np.array(x_test_30_jumlahpenderita)
+        #Membuat DATA TESTING
+        test_data_JP = sca[training_data_jumlahpenderita - 30: ,:]
+        #Membuat data x_test dan y_test
+        x_test_JP = []
+        y_test_JP =  sca[training_data_jumlahpenderita:, :]
+        for i in range(30,len(test_data_JP)):
+            x_test_JP.append(test_data_JP[i-30:i,0])
 
-        # Reshape the data
-        x_test_30_jumlahpenderita = np.reshape(x_test_30_jumlahpenderita, (x_test_30_jumlahpenderita.shape[0], x_test_30_jumlahpenderita.shape[1], 1 ))
-        # Get the models predicted price values 
-        predictions_30_jumlahpenderita= model.predict(x_test_30_jumlahpenderita)
+        #Ubah Data Ke Numpy Array
+        x_test_JP = np.array(x_test_JP)
+
+        #
+        x_test_JP = np.reshape(x_test_JP, (x_test_JP.shape[0],x_test_JP.shape[1],1))
+
+        #Model Prediksi
+        predictions_JP = model.predict(x_test_JP)
         model.reset_states()
-        #predictions_30 = scaler.inverse_transform(predictions_30)
 
-        """EVALUASI"""
+        """NILAI ERROR DAN VALIDASI R2"""
 
-        mae = mean_absolute_error(y_test_30_jumlahpenderita, predictions_30_jumlahpenderita)
-        mse = mean_squared_error(y_test_30_jumlahpenderita, predictions_30_jumlahpenderita)
+        mae = mean_absolute_error(y_test_JP,predictions_JP)
+        mse = mean_squared_error(y_test_JP,predictions_JP)
         rmse = np.sqrt(mse)
-        r2 = r2_score(y_test_30_jumlahpenderita, predictions_30_jumlahpenderita)
 
-        print('MAE :', mae)
-        print('MSE :', mse)
-        print('RMSE :', rmse)
-        print('R2: ', r2)
+        print ('MAE :',mae)
+        print ('MSE :',mse)
+        print ('RMSE :',rmse)
 
-        predictions_30_jumlahpenderita_scale = scale.inverse_transform(predictions_30_jumlahpenderita)
-        predictions_30_jumlahpenderita_scale
+        """DENORMALISASI"""
 
-        train_30_jumlahpenderita = Datajumlahpenderita[:training_data_len_jumlahpenderita]
-        valid_30_jumlahpenderita = df_interpolate_lin_jumlahpenderita[training_data_len_jumlahpenderita:]
+        predictions_JP_scale = scale.inverse_transform(predictions_JP)
+        predictions_JP_scale
 
-        train_30_jumlahpenderita = pd.DataFrame(train_30_jumlahpenderita)
-        valid_30_jumlahpenderita = pd.DataFrame(valid_30_jumlahpenderita)
-        valid_30_jumlahpenderita['Predictions'] = predictions_30_jumlahpenderita_scale
-        valid_30_jumlahpenderita
+        """PERBANDINGAN TEST DATA DAN PREDIKSI"""
 
-        valid_30_jumlahpenderita.to_csv( "Testingpredict.csv", encoding='utf-8-sig')
+        train_data_JP = DataJP[:training_data_jumlahpenderita]
+        valid_data_JP = Dataset[['jumlahpenderita']][training_data_jumlahpenderita:]
 
-        """Visualisasi Perbandingan"""
+        train_data_JP = pd.DataFrame(train_data_JP)
+        valid_data_JP = pd.DataFrame(valid_data_JP)
+        valid_data_JP['predictions_JP'] = predictions_JP_scale
+        valid_data_JP
 
-        # Visualize the data
+        valid_data_JP.to_csv( "JP_TESTTINGPREDICT.CSV",encoding='utf-8-sig')
+
+        """VISUALISASI PERBANDINGAN"""
+
         plt.figure(figsize=(14,6))
-        #plt.plot(train_30_Pm10['pm10'], label="Traning",c = "g")
-        plt.plot(valid_30_jumlahpenderita['jumlahpenderita'], label="validasi",c = "b")
-        plt.plot(valid_30_jumlahpenderita['Predictions'], label="prediksi", c = "r")
+        plt.plot(valid_data_JP['jumlahpenderita'],label="validasi",c = "r")
+        plt.plot(valid_data_JP['predictions_JP'],label="Prediksi",c="b")
+        plt.legend()
+        plt.show()
+
+        Dataset_JP = Dataset.copy()
+
+        Dataset_JP = Dataset[['jumlahpenderita']]
+
+        Dataset_JP.info()
+
+        Dataset_JP.reset_index(drop=True)
+
+        inputJP = Dataset_JP[len(Dataset_JP)- len(Dataset_JP) - 30 - 30:].values
+        inputJP = inputJP.reshape(-1,1)
+        inputJP = scale.transform(inputJP)
+
+        x_test_JP = []
+        y_test_JP = []
+        for i in range (30, 30 + 30 ):
+        x_test_JP.append(inputJP[i-30:i, 0])
+        
+        
+        x_test_JP, y_test_JP = np.array(x_test_JP), np.array(y_test_JP)
+
+        x_test_JP = np.reshape(x_test_JP,(x_test_JP.shape[0], x_test_JP.shape[1],1))
+        x_test_JP.shape
+
+        n_future = 30 # Redfening n_future to extend prediction dates beyond original dates .. 
+        forecast_period_dates = pd.date_range(start='2022-01-01', periods=n_future, freq='1d').tolist()
+        forecast_period_dates[:30]
+
+        forecast = model.predict(x_test_JP[:+n_future])
+        forecast.shape
+
+        x_test_JP[:+30].shape
+
+        Dataset_JP.shape[1]
+
+        y_pred_future = scale.inverse_transform(forecast)[:,0]
+        y_pred_future
+
+        # Convert timestamp to date
+        forecast_dates = []
+        for time_i in forecast_period_dates:
+            forecast_dates.append(time_i.date())
+            
+        df_forecast_JP= pd.DataFrame({'date':np.array(forecast_dates), 'jumlahpenderita':y_pred_future})
+        df_forecast_JP['date']=pd.to_datetime(df_forecast_JP['date'])
+        df_forecast_JP = df_forecast_JP.set_index('date')
+
+        df_forecast_JP
+        Dataset_JP['label']='observed'
+        df_forecast_JP['label']='predicted'
+
+        a = [Dataset_JP, df_forecast_JP]
+        a = pd.concat(a)
+        a=pd.concat([Dataset_JP,df_forecast_JP])
+        print(a.head())
+
+        plot_forecast_JP = a
+        plot_forecast_JP
+
+        plt.figure(figsize=(14,8))
+        plt.plot(plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'], label= 'prediksi')
+
+        plt.ylabel("JumlahPenderita")
+        plt.xlabel("Date")
+        plt.legend()
+        plt.title("Jumlah Penderita TBC")
+        plt.show()
         plt.legend()
         plt.savefig("static/img/ltsm.png", format='png')
-        return valid_30_jumlahpenderita['Predictions'],valid_30_jumlahpenderita.index
+        return a['Predictions'],a.index
