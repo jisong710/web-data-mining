@@ -93,7 +93,7 @@ class lstm:
 
         DataJP = DatasetJumlahpenderita
         Dataset_Jumlahpenderita = DataJP.values
-        training_data_jumlahpenderita=int(np.ceil(len(Dataset_Jumlahpenderita)*.80))
+        training_data_jumlahpenderita=int(np.ceil(len(Dataset_Jumlahpenderita)*.50))
         training_data_jumlahpenderita
 
         Dataset_Jumlahpenderita = Dataset_Jumlahpenderita.reshape(-1,1)
@@ -125,11 +125,10 @@ class lstm:
         """## MODELING"""
 
         model = Sequential()
-        #Add First Layer
-        model.add(LSTM(units = 64, return_sequences=False, input_shape= (x_train.shape[1], 1)))
-        model.add(Dropout(0.2))
-        model.add(Dense(units = 1, activation="sigmoid"))
 
+        model.add(LSTM(units = 256, return_sequences=False, input_shape= (x_train.shape[1], 1)))
+        model.add(Dropout(0.2))
+        model.add(Dense(units = 1, activation="linear"))
 
         # Compile the model
         opt = tf.keras.optimizers.Adam(learning_rate=0.001)
@@ -166,7 +165,7 @@ class lstm:
         predictions_JP = model.predict(x_test_JP)
         model.reset_states()
 
-        """NILAI ERROR DAN VALIDASI R2"""
+        """NILAI ERROR"""
 
         mae = mean_absolute_error(y_test_JP,predictions_JP)
         mse = mean_squared_error(y_test_JP,predictions_JP)
@@ -209,7 +208,7 @@ class lstm:
 
         Dataset_JP.reset_index(drop=True)
 
-        inputJP = Dataset_JP[len(Dataset_JP)- len(Dataset_JP) - 30 - 30:].values
+        inputJP = Dataset_JP[len(Dataset_JP)- len(Dataset_JP) - 45 - 45:].values
         inputJP = inputJP.reshape(-1,1)
         inputJP = scale.transform(inputJP)
 
@@ -265,6 +264,8 @@ class lstm:
         plt.ylabel("JumlahPenderita")
         plt.xlabel("Date")
         plt.legend()
+        plt.title("Jumlah Penderita TBC")
+        plt.show()
         plt.title("Jumlah Penderita TBC")
         plt.savefig("static/img/ltsm.png", format='png')
         return plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'],plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted'].index
