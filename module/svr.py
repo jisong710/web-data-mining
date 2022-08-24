@@ -33,9 +33,8 @@ from datetime import datetime, timedelta
 import io
 
 class svr:
-  def connect(self):
-        return pymysql.connect(host="localhost", user="root", password="", database="machinelearnTBC", charset='utf8mb4')
   def svr(self):
+    con = pymysql.connect(host="localhost", user="root", password="", database="machinelearnTBC", charset='utf8mb4')
     #import dataset
     datatbc = pd.read_csv("datasetTBC.csv")
     datatbc
@@ -159,7 +158,7 @@ class svr:
     last_date = date_list[-1]
     day = 30
     predict_dates = pd.date_range(start=last_date, periods=day, freq='1d').tolist()
-    con = svr.connect(self)
+    
     n = []
     iteration = 0
     for d in predict_dates:
