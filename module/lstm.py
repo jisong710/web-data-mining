@@ -40,7 +40,7 @@ from io import BytesIO
 
 class lstm:
     def connect(self):
-        return pymysql.connect(host="localhost", user="root", password="", database="AI", charset='utf8mb4')
+        return pymysql.connect(host="localhost", user="root", password="", database="machinelearnTBC", charset='utf8mb4')
     def lstm(self):
         df = pd.read_csv('datasetTBC.csv', parse_dates=["date"])
         df
@@ -236,11 +236,17 @@ class lstm:
 
         y_pred_future = scale.inverse_transform(forecast)[:,0]
         y_pred_future
-
+        con = lstm.connect(self)
         # Convert timestamp to date
         forecast_dates = []
+        iteration = 0
         for time_i in forecast_period_dates:
             forecast_dates.append(time_i.date())
+            cursor = con.cursor()
+            cursor.execute("INSERT INTO penderitaLTSM(jumlah,tanggal) VALUES(%s,%s)",
+                           (y_pred_future[iteration],time_i.date()))
+            con.commit()
+            iteration = iteration+1
             
         df_forecast_JP= pd.DataFrame({'date':np.array(forecast_dates), 'jumlahpenderita':y_pred_future})
         df_forecast_JP['date']=pd.to_datetime(df_forecast_JP['date'])
@@ -257,7 +263,7 @@ class lstm:
 
         plot_forecast_JP = a
         plot_forecast_JP
-
+        
         plt.figure(figsize=(14,8))
         plt.plot(plot_forecast_JP.loc[plot_forecast_JP['label']=='predicted', 'jumlahpenderita'], label= 'prediksi')
 

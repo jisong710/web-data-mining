@@ -159,10 +159,15 @@ class svr:
     last_date = date_list[-1]
     day = 30
     predict_dates = pd.date_range(start=last_date, periods=day, freq='1d').tolist()
-
+    con = svr.connect(self)
     n = []
+    iteration = 0
     for d in predict_dates:
       n.append(d.date())
+      cursor = con.cursor()
+      cursor.execute("INSERT INTO penderitaSVR(jumlah,tanggal) VALUES(%s,%s)",(result[iteration],d.date()))
+      con.commit()
+      iteration = iteration+1
 
     df_predict = pd.DataFrame({'date':np.array(n), 'jumlahpenderita':result[0:len(n)]})
     df_predict['date']=pd.to_datetime(df_predict['date'])
