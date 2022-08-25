@@ -8,6 +8,8 @@ Original file is located at
 """
 
 #Library
+import matplotlib
+matplotlib.use('Agg')
 import base64
 import numpy as np
 import matplotlib.pyplot as plt

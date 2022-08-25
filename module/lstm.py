@@ -8,7 +8,8 @@ Original file is located at
 
 **IMPORT LIBRARY**
 """
-
+import matplotlib
+matplotlib.use('Agg')
 import io
 import pandas as pd
 import glob
