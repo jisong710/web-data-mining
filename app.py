@@ -18,14 +18,14 @@ def svr():
     length = len(tabel)
     return render_template('SVR.html', tabel = tabel , length = length, predict = prediksi)
 
-@app.route('/ltsm',methods = ['POST', 'GET'])
-def ltsm():
+@app.route('/lstm',methods = ['POST', 'GET'])
+def lstm():
     tabel = []
     prediksi = []
     if(request.method == 'POST'):
         tabel,prediksi = algoritmalstm.lstm()
     length = len(tabel)
-    return render_template('LTSM.html', tabel = tabel , length = length, predict = prediksi)
+    return render_template('LSTM.html', tabel = tabel , length = length, predict = prediksi)
 
 @app.route('/about',methods = ['POST', 'GET'])
 def about():
