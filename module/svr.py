@@ -215,6 +215,7 @@ class svr:
     d = pd.concat(d)
     d = pd.concat([datatbc,df_predict])
     d
+
     svrjpg = io.BytesIO()
     plt.figure(figsize=(15,10))
     plt.plot(d.loc[d['label']=='prediksi', 'jumlahpenderita'], label= 'prediksi', color= 'red')
@@ -223,4 +224,4 @@ class svr:
     plt.legend()
     plt.title("Prediksi Penderita Penyakit Tuberkulosis Kab.Karawang")
     plt.savefig("static/img/svr.png", format='png')
-    return df_predict['jumlahpenderita'],df_predict.index
+    return df_predict['jumlahpenderita'].astype(int),df_predict.index
