@@ -94,7 +94,7 @@ class lstm:
 
         DataJP = DatasetJumlahpenderita
         Dataset_Jumlahpenderita = DataJP.values
-        training_data_jumlahpenderita=int(np.ceil(len(Dataset_Jumlahpenderita)*.50))
+        training_data_jumlahpenderita=int(np.ceil(len(Dataset_Jumlahpenderita)*.70))
         training_data_jumlahpenderita
 
         Dataset_Jumlahpenderita = Dataset_Jumlahpenderita.reshape(-1,1)
@@ -128,14 +128,13 @@ class lstm:
         model = Sequential()
 
         model.add(LSTM(units = 256, return_sequences=False, input_shape= (x_train.shape[1], 1)))
-        model.add(Dropout(0.2))
-        model.add(Dense(units = 1, activation="linear"))
+        model.add(Dense(units = 1, activation="sigmoid"))
 
         # Compile the model
         opt = tf.keras.optimizers.Adam(learning_rate=0.001)
         model.compile(loss='mean_squared_error', optimizer=opt)
 
-        history = model.fit(x_train, y_train, batch_size=100, epochs = 300)
+        history = model.fit(x_train, y_train, batch_size=100, epochs = 700)
 
         model.save('Model_JP.h5')
 
@@ -245,7 +244,7 @@ class lstm:
             forecast_dates.append(time_i.date())
             cursor = con.cursor()
             cursor.execute("INSERT INTO penderitaLTSM(jumlah,tanggal) VALUES(%s,%s)",
-                           (y_pred_future[iteration],time_i.date()))
+                           (int(y_pred_future[iteration]),time_i.date()))
             con.commit()
             iteration = iteration+1
             

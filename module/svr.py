@@ -166,7 +166,7 @@ class svr:
     for d in predict_dates:
       n.append(d.date())
       cursor = con.cursor()
-      cursor.execute("INSERT INTO penderitaSVR(jumlah,tanggal) VALUES(%s,%s)",(result[iteration],d.date()))
+      cursor.execute("INSERT INTO penderitaSVR(jumlah,tanggal) VALUES(%s,%s)",(int(result[iteration]),d.date()))
       con.commit()
       iteration = iteration+1
 
